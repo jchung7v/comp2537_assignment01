@@ -215,10 +215,10 @@ app.post("/loggingin", async (req, res) => {
 
 // Get random dog image
 function getRandomDogImage() {
-  const dogImagePath = path.join(__dirname, "public", "dog-images");
+  const dogImagePath = path.join(__dirname, "public");
   const dogImageFiles = fs.readdirSync(dogImagePath);
   const randomIndex = Math.floor(Math.random() * dogImageFiles.length);
-  return `/dog-images/${dogImageFiles[randomIndex]}`;
+  return `${dogImageFiles[randomIndex]}`;
 }
 
 app.use(express.static(__dirname + "/public"));
