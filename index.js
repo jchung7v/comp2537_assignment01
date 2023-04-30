@@ -248,12 +248,12 @@ app.post("/loggingin", async (req, res) => {
 });
 
 // Get random dog image
-function getRandomDogImage() {
-  const dogImagePath = path.join(__dirname, "public", "dog-images");
-  const dogImageFiles = fs.readdirSync(dogImagePath);
-  const randomIndex = Math.floor(Math.random() * dogImageFiles.length);
-  return `/dog-images/${dogImageFiles[randomIndex]}`;
-}
+// function getRandomDogImage() {
+//   const dogImagePath = path.join(__dirname, "public", "dog-images");
+//   const dogImageFiles = fs.readdirSync(dogImagePath);
+//   const randomIndex = Math.floor(Math.random() * dogImageFiles.length);
+//   return `/dog-images/${dogImageFiles[randomIndex]}`;
+// }
 
 app.use(express.static(__dirname + "/public"));
 
@@ -264,11 +264,12 @@ app.get("/members", (req, res) => {
     return;
   }
 
-  const dogImage = getRandomDogImage();
+  // const dogImage = getRandomDogImage();
+  // <img src='${dogImage}' style='width:250px'>
+
 
   var html = `
     <h3>Hello, ${req.session.username}</h3>
-    <img src='${dogImage}' style='width:250px'>
     <br>
     <button onClick='window.location.href="/logout"'>Log Out</button>
     `;
@@ -286,13 +287,6 @@ app.get("*", (req, res) => {
   res.status(404);
   res.send("Page not found - 404");
 });
-
-
-// connectDB().then(() => {
-//   app.listen(port, () => {
-//     console.log(`Listening on port ${port}`)
-//   })
-// });
 
 app.listen(port, () => {
   console.log("Example app listening on port " + port);
