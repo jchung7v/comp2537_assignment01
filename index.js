@@ -2,6 +2,7 @@ require("./utils.js");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
+// const mongoose = require('mongoose');
 const MongoStore = require("connect-mongodb-session")(session);
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
@@ -25,6 +26,18 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 var { database } = include("databaseConnection");
 
+
+// mongoose.set('strictQuery', false);
+// const connectDB = async () => {
+//     try {
+//         const conn = await mongoose.connect(process.env.MONGODB_URI);
+//         console.log(`MongoDB Connected: ${conn.connection.host}`);
+//     } catch (error) {
+//         console.log(error);
+//         process.exit(1);
+//     }
+// }
+
 const userCollection = database.db(mongodb_database).collection("users");
 
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +54,8 @@ app.use(express.urlencoded({ extended: false }));
 
 var mongoStore = new MongoStore({
   // mongoUrl: "mongodb://localhost:27017/sessions",
-  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/?retryWrites=true`,
+  mongoURI: 'process.env.MONGODB_URI',
   collection: "mySessions",
   crypto: {
     secret: mongodb_session_secret,
@@ -272,6 +286,13 @@ app.get("*", (req, res) => {
   res.status(404);
   res.send("Page not found - 404");
 });
+
+
+// connectDB().then(() => {
+//   app.listen(port, () => {
+//     console.log(`Listening on port ${port}`)
+//   })
+// });
 
 app.listen(port, () => {
   console.log("Example app listening on port " + port);
