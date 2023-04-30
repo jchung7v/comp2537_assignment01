@@ -26,34 +26,12 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 var { database } = include("databaseConnection");
 
-
-// mongoose.set('strictQuery', false);
-// const connectDB = async () => {
-//     try {
-//         const conn = await mongoose.connect(process.env.MONGODB_URI);
-//         console.log(`MongoDB Connected: ${conn.connection.host}`);
-//     } catch (error) {
-//         console.log(error);
-//         process.exit(1);
-//     }
-// }
-
 const userCollection = database.db(mongodb_database).collection("users");
 
 app.use(express.urlencoded({ extended: false }));
 
 /* database connection */
-// const atlasURI = `mongodb://localhost:27017/sessions`;
-
-// const atlasURI = `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/?retryWrites=true`;
-
-// var database = new MongoClient(atlasURI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
-
 var mongoStore = new MongoStore({
-  // mongoUrl: "mongodb://localhost:27017/sessions",
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/?retryWrites=true`,
   mongoURI: 'process.env.MONGODB_URI',
   collection: "mySessions",
@@ -61,13 +39,6 @@ var mongoStore = new MongoStore({
     secret: mongodb_session_secret,
   },
 });
-
-// var mongoStore = MongoStore.create({
-// 	mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-//     crypto: {
-//         secret: mongodb_session_secret
-// 	}
-// });
 
 app.use(
   session({
@@ -165,11 +136,6 @@ app.post("/submitUser", async (req, res) => {
     password: Joi.string().max(20).required(),
   });
 
-  // Set up schema for validation
-  //   var usernameSchema = Joi.string().alphanum().max(20).required();
-  //   var emailSchema = Joi.string().email().required();
-  //   var passwordSchema = Joi.string().max(20).required();
-
   // Validation of user input
   const validationResult = schema.validate({ username, email, password });
   if (validationResult.error != null) {
@@ -248,12 +214,12 @@ app.post("/loggingin", async (req, res) => {
 });
 
 // Get random dog image
-// function getRandomDogImage() {
-//   const dogImagePath = path.join(__dirname, "public", "dog-images");
-//   const dogImageFiles = fs.readdirSync(dogImagePath);
-//   const randomIndex = Math.floor(Math.random() * dogImageFiles.length);
-//   return `/dog-images/${dogImageFiles[randomIndex]}`;
-// }
+function getRandomDogImage() {
+  const dogImagePath = path.join(__dirname, "public", "dog-images");
+  const dogImageFiles = fs.readdirSync(dogImagePath);
+  const randomIndex = Math.floor(Math.random() * dogImageFiles.length);
+  return `/dog-images/${dogImageFiles[randomIndex]}`;
+}
 
 app.use(express.static(__dirname + "/public"));
 
@@ -264,12 +230,12 @@ app.get("/members", (req, res) => {
     return;
   }
 
-  // const dogImage = getRandomDogImage();
-  // <img src='${dogImage}' style='width:250px'>
+  const dogImage = getRandomDogImage();
 
 
   var html = `
-    <h3>Hello, ${req.session.username}</h3>
+  <h3>Hello, ${req.session.username}</h3>
+    <img src='${dogImage}' style='width:250px'>
     <br>
     <button onClick='window.location.href="/logout"'>Log Out</button>
     `;
