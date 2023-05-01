@@ -47,6 +47,7 @@ app.use(
   })
 );
 
+// main page
 app.get("/", (req, res) => {
   if (!req.session.username) {
     var html = `
@@ -63,6 +64,31 @@ app.get("/", (req, res) => {
         `;
   }
   res.send(html);
+});
+
+app.get('/nosql-injection', async (req,res) => {
+	var username = req.query.user;
+
+	if (!username) {
+		res.send(`<h3>no user provided - try /nosql-injection?user=name</h3> <h3>or /nosql-injection?user[$ne]=name</h3>`);
+		return;
+	}
+	console.log("user: "+username);
+
+	const schema = Joi.string().max(20).required();
+	const validationResult = schema.validate(username);
+
+	if (validationResult.error != null) {  
+	   console.log(validationResult.error);
+	   res.send("<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>");
+	   return;
+	}	
+
+	const result = await userCollection.find({username: username}).project({username: 1, password: 1, _id: 1}).toArray();
+
+	console.log(result);
+
+    res.send(`<h1>Hello ${username}</h1>`);
 });
 
 // Log in page
