@@ -2,7 +2,7 @@ require("./utils.js");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongodb-session")(session);
+const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const app = express();
@@ -31,12 +31,10 @@ const userCollection = database.db(mongodb_database).collection("users");
 app.use(express.urlencoded({ extended: false }));
 
 /* database connection */
-var mongoStore = new MongoStore({
-  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/?retryWrites=true`,
-  mongoURI: 'process.env.MONGODB_URI',
-  collection: "mySessions",
+var mongoStore = MongoStore.create({
+  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
   crypto: {
-    secret: mongodb_session_secret,
+    secret: mongodb_session_secret
   },
 });
 
