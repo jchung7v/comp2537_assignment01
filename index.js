@@ -2,7 +2,6 @@ require("./utils.js");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-// const mongoose = require('mongoose');
 const MongoStore = require("connect-mongodb-session")(session);
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
@@ -13,7 +12,8 @@ const port = process.env.PORT || 3000;
 const fs = require("fs");
 const path = require("path");
 
-const expireTime = 60 * 60 * 1000; //expires after 1 hour  (hours * minutes * seconds * millis)
+//expires after 1 hour  (hours * minutes * seconds * millis)
+const expireTime = 60 * 60 * 1000; 
 
 /* secretf information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -231,7 +231,6 @@ app.get("/members", (req, res) => {
   }
 
   const dogImage = getRandomDogImage();
-
 
   var html = `
   <h3>Hello, ${req.session.username}</h3>
